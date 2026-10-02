@@ -1,0 +1,5 @@
+name: opencode-zen-compat
+version: 1.0.0
+description: "OpenCode Zen free-tier gate compatibility — llm_request middleware that rewrites x-opencode-session/x-opencode-request to the ses_/msg_ id shape opencode.ai accepts and appends the bash/read tool declarations the gate requires (opencode-zen only; opencode-go untouched). Enable with `hermes plugins enable opencode-zen-compat`."
+author: Kugli
+kind: standalone

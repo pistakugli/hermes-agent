@@ -19,6 +19,15 @@ _ATTRIBUTION_HEADERS = {
     "User-Agent": f"HermesAgent/{get_version_info().base_version}",
 }
 
+# The Zen free-tier gate answers 403 FreeTierError unless the request fingerprints as the
+# OpenCode client (probe matrix against opencode.ai/zen, verified 2026-09-30); the UA rides
+# client-wide via default_headers so main-turn AND auxiliary calls carry it. The per-request
+# pieces (x-opencode-session/x-opencode-request, body tools carrying bash+read) come from
+# plugins/opencode-zen-compat. Go keeps the Hermes attribution — its relay gates on header
+# presence, not UA (its session id only must exist, #105841).
+_OPencode_FREE_TIER_UA = "opencode/1.18.33 ai-sdk/provider-utils/4.0.23 runtime/bun/1.3.14"
+_ZEN_HEADERS = {**_ATTRIBUTION_HEADERS, "User-Agent": _OPencode_FREE_TIER_UA}
+
 
 def _flat_model_name(model: str | None) -> str:
     """Bare OpenCode model ID, tolerating aggregator prefixes."""
@@ -117,7 +126,7 @@ class OpenCodeZenProfile(ProviderProfile):
 
 opencode_zen = OpenCodeZenProfile(
     name="opencode-zen", aliases=("opencode", "opencode_zen", "zen"), env_vars=("OPENCODE_ZEN_API_KEY",),
-    base_url="https://opencode.ai/zen/v1", default_headers=dict(_ATTRIBUTION_HEADERS),
+    base_url="https://opencode.ai/zen/v1", default_headers=dict(_ZEN_HEADERS),
     default_aux_model="gemini-3-flash",
 )
 
